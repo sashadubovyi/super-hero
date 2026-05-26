@@ -96,3 +96,23 @@ export const CATEGORIES = [
     ],
   },
 ];
+
+/**
+ * Пул "крутых" героев для баннера на главной.
+ * Берём случайного из этого списка при загрузке страницы.
+ * Только узнаваемые персонажи — чтобы баннер цеплял.
+ */
+export const FEATURED_IDS = [
+  70,  // Batman
+  644, // Superman
+  346, // Iron Man
+  620, // Spider-Man
+  370, // Hulk
+  659, // Thor
+  149, // Captain America
+  263, // Doctor Strange
+  720, // Wolverine
+  655, // The Joker
+  681, // Thanos
+  213, // Darkseid
+];

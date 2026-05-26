@@ -1,8 +1,16 @@
+import HeroRow from "../components/HeroRow";
+import { CATEGORIES } from "../data/categories";
+
 function Home() {
   return (
-    <div style={{ padding: "40px" }}>
-      <h1>Home</h1>
-      <p>This is the main page</p>
+    <div className="home">
+      {CATEGORIES.map((category) => (
+        <HeroRow
+          key={category.id}
+          title={category.title}
+          ids={category.ids}
+        />
+      ))}
     </div>
   );
 }

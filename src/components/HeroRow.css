@@ -1,0 +1,96 @@
+.hero-row {
+  margin: 32px 0;
+}
+
+.hero-row__title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0 0 12px 48px;
+  color: #fff;
+}
+
+.hero-row__container {
+  position: relative;
+}
+
+.hero-row__scroll {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  padding: 8px 48px;
+  /* Скрываем скроллбар во всех браузерах */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.hero-row__scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.hero-row__item {
+  flex: 0 0 200px;
+  scroll-snap-align: start;
+}
+
+.hero-row__skeleton {
+  flex: 0 0 200px;
+  aspect-ratio: 2 / 3;
+  background: linear-gradient(
+    90deg,
+    #1a1a1a 0%,
+    #252525 50%,
+    #1a1a1a 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 6px;
+  scroll-snap-align: start;
+}
+
+.hero-row__arrow {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  font-size: 2.5rem;
+  font-weight: 300;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s ease, background 0.2s ease;
+  z-index: 2;
+}
+
+.hero-row__container:hover .hero-row__arrow {
+  opacity: 1;
+}
+
+.hero-row__arrow:hover {
+  background: rgba(0, 0, 0, 0.85);
+}
+
+.hero-row__arrow--left { left: 0; }
+.hero-row__arrow--right { right: 0; }
+
+@media (max-width: 600px) {
+  .hero-row__title {
+    margin-left: 16px;
+    font-size: 1.1rem;
+  }
+  .hero-row__scroll {
+    padding: 8px 16px;
+  }
+  .hero-row__item,
+  .hero-row__skeleton {
+    flex: 0 0 140px;
+  }
+  /* На мобилке стрелки бесполезны — там тач-скролл */
+  .hero-row__arrow { display: none; }
+}

@@ -31,7 +31,7 @@ export default async function handler(request, response) {
   }
 
   // Собираем финальный URL к SuperheroAPI
-  const url = `https://superheroapi.com/api/${token}${path}`;
+const url = `https://www.superheroapi.com/api.php/${token}${path}`;
 
   try {
     const apiResponse = await fetch(url);

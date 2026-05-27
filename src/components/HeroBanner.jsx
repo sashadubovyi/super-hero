@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { getHeroById, imageUrl } from "../api/superhero";
+import { getHeroById } from "../api/superhero";
+import { getHeroImageUrl } from "../api/akabab";
 import { FEATURED_IDS } from "../data/categories";
 import { randomItem } from "../utils/random";
 import "./HeroBanner.css";
@@ -10,29 +11,29 @@ function HeroBanner() {
   const [hero, setHero] = useState(null);
   const [loading, setLoading] = useState(true);
   const [visible, setVisible] = useState(false);
+  const [bgImage, setBgImage] = useState(null);
 
-  // Загружаем героя по выбранному ID
   useEffect(() => {
     if (!currentId) return;
 
     let cancelled = false;
     setLoading(true);
-    setVisible(false); // прячем контент перед сменой
+    setVisible(false);
+    setBgImage(null);
 
     getHeroById(currentId)
       .then((data) => {
         if (!cancelled) {
           setHero(data);
-          // requestAnimationFrame даёт браузеру успеть отрисовать
-          // "невидимое" состояние прежде чем мы включим visible —
-          // иначе CSS-переход не сработает (нет начального кадра)
+          getHeroImageUrl(data.id).then((url) => {
+            if (!cancelled) setBgImage(url);
+          });
           requestAnimationFrame(() => {
             if (!cancelled) setVisible(true);
           });
         }
       })
       .catch(() => {
-        // Если конкретный ID не загрузился — пробуем другой
         if (!cancelled) {
           setCurrentId((prev) => randomItem(FEATURED_IDS, [prev]));
         }
@@ -41,19 +42,16 @@ function HeroBanner() {
         if (!cancelled) setLoading(false);
       });
 
-    return () => {
-      cancelled = true;
-    };
+    return () => { cancelled = true; };
   }, [currentId]);
 
- // Автосмена героя каждые 10 секунд
-useEffect(() => {
-  const timer = setInterval(() => {
-    setCurrentId((prev) => randomItem(FEATURED_IDS, [prev]));
-  }, 10000);
-
-  return () => clearInterval(timer);
-}, []);
+  // Автосмена каждые 10 секунд
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentId((prev) => randomItem(FEATURED_IDS, [prev]));
+    }, 10000);
+    return () => clearInterval(timer);
+  }, []);
 
   if (loading || !hero) {
     return <div className="hero-banner hero-banner--loading" />;
@@ -62,7 +60,6 @@ useEffect(() => {
   const bio = hero.biography;
   const stats = hero.powerstats;
 
-  // Краткое описание: алайнмент + издатель + место рождения (если есть)
   const tagline = [
     bio?.alignment === "bad" ? "Villain" : bio?.alignment === "good" ? "Hero" : null,
     bio?.publisher,
@@ -77,9 +74,7 @@ useEffect(() => {
     <section
       className={`hero-banner ${visible ? "hero-banner--visible" : ""}`}
       style={{
-        backgroundImage: hero.image?.url
-          ? `url(${imageUrl(hero.image.url)})`
-          : "none",
+        backgroundImage: bgImage ? `url(${bgImage})` : "none",
       }}
     >
       <div className="hero-banner__overlay" />
@@ -92,7 +87,6 @@ useEffect(() => {
           <p className="hero-banner__fullname">{bio["full-name"]}</p>
         )}
         {tagline && <p className="hero-banner__tagline">{tagline}</p>}
-
         {stats && (
           <div className="hero-banner__stats">
             {Object.entries(stats).slice(0, 6).map(([key, value]) => (
@@ -103,7 +97,6 @@ useEffect(() => {
             ))}
           </div>
         )}
-
         <div className="hero-banner__actions">
           <Link
             to={`/hero/${hero.id}`}

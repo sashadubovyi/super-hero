@@ -53,7 +53,7 @@ function Hero() {
       <button className="hero-page__back" onClick={handleBack}>← Back</button>
       <div className="hero-page__layout">
         <div className="hero-page__poster">
-          <HeroImage src={hero.image?.url} name={hero.name} />
+          <HeroImage id={hero.id} name={hero.name} />
         </div>
         <div className="hero-page__details">
           <h1 className="hero-page__name">{hero.name}</h1>

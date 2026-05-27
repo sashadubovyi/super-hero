@@ -13,10 +13,10 @@ function HeroCard({ hero }) {
     <Link to={`/hero/${hero.id}`} className="hero-card">
       <div className="hero-card__image-wrap">
         <HeroImage
-          src={hero.image?.url}
-          name={hero.name}
-          className="hero-card__image"
-        />
+  id={hero.id}
+  name={hero.name}
+  className="hero-card__image"
+/>
       </div>
       <div className="hero-card__info">
         <h3 className="hero-card__name">{hero.name}</h3>

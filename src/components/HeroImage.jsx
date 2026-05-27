@@ -1,19 +1,35 @@
-import { useState } from "react";
-import { imageUrl } from "../api/superhero";
+import { useEffect, useState } from "react";
+import { getHeroImageUrl } from "../api/akabab";
 
 /**
- * Картинка героя с автоматическим фолбэком на плейсхолдер.
- * Используем везде вместо обычного <img> для героев.
+ * Картинка героя из Akabab CDN (jsDelivr) — не банится нигде.
+ * При ошибке загрузки показывает плейсхолдер с первой буквой имени.
  *
  * props:
- *   src — оригинальный URL картинки из API (hero.image.url)
+ *   id — ID героя (число или строка)
  *   name — имя героя (для alt-текста и плейсхолдера)
- *   className — кастомные стили
+ *   className, style — кастомные стили
  */
-function HeroImage({ src, name, className, style }) {
+function HeroImage({ id, name, className, style }) {
+  const [src, setSrc] = useState(null);
   const [failed, setFailed] = useState(false);
 
-  // Плейсхолдер — первая буква имени на градиентном фоне
+  useEffect(() => {
+    if (!id) return;
+    let cancelled = false;
+
+    getHeroImageUrl(id)
+      .then((url) => {
+        if (!cancelled) setSrc(url);
+      })
+      .catch(() => {
+        if (!cancelled) setFailed(true);
+      });
+
+    return () => { cancelled = true; };
+  }, [id]);
+
+  // Плейсхолдер — если нет src или картинка не загрузилась
   if (failed || !src) {
     const letter = (name || "?").charAt(0).toUpperCase();
     return (
@@ -39,7 +55,7 @@ function HeroImage({ src, name, className, style }) {
 
   return (
     <img
-      src={imageUrl(src)}
+      src={src}
       alt={name || "Hero"}
       className={className}
       style={style}

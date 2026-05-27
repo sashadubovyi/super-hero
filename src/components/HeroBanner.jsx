@@ -46,9 +46,14 @@ function HeroBanner() {
     };
   }, [currentId]);
 
-  function handleRandom() {
+ // Автосмена героя каждые 10 секунд
+useEffect(() => {
+  const timer = setInterval(() => {
     setCurrentId((prev) => randomItem(FEATURED_IDS, [prev]));
-  }
+  }, 10000);
+
+  return () => clearInterval(timer);
+}, []);
 
   if (loading || !hero) {
     return <div className="hero-banner hero-banner--loading" />;
@@ -106,13 +111,6 @@ function HeroBanner() {
           >
             View details
           </Link>
-          <button
-            type="button"
-            onClick={handleRandom}
-            className="hero-banner__btn hero-banner__btn--secondary"
-          >
-            ⟳ Random hero
-          </button>
         </div>
       </div>
     </section>
